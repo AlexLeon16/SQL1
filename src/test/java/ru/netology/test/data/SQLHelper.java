@@ -21,18 +21,18 @@ public class SQLHelper {
     }
 
     public static String getVerificationCode(String login) {
-        var codeSql = """
-                SELECT ac.code
-                FROM auth_codes ac
-                JOIN users u ON ac.user_id = u.id
-                WHERE u.login = ?
-                ORDER BY ac.created DESC
-                LIMIT 1
-                """;
+        var codeSql =
+                "SELECT ac.code " +
+                        "FROM auth_codes ac " +
+                        "JOIN users u ON ac.user_id = u.id " +
+                        "WHERE u.login = ? " +
+                        "ORDER BY ac.created DESC " +
+                        "LIMIT 1";
 
         var runner = new QueryRunner();
         try (var conn = getConn()) {
-            return runner.query(conn, codeSql, new ScalarHandler<>(), login).toString();
+            Object result = runner.query(conn, codeSql, new ScalarHandler<>(), login);
+            return result == null ? null : result.toString();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -43,12 +43,30 @@ public class SQLHelper {
 
         var runner = new QueryRunner();
         try (var conn = getConn()) {
-            return runner.query(conn, statusSql, new ScalarHandler<>(), login).toString();
+            Object result = runner.query(conn, statusSql, new ScalarHandler<>(), login);
+            return result == null ? null : result.toString();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void resetUserStatus(String login) {
+        var sql = "UPDATE users SET status = 'active' WHERE login = ?";
+        var runner = new QueryRunner();
+        try (var conn = getConn()) {
+            runner.update(conn, sql, login);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    public static void deleteAuthCodes() {
+        var runner = new QueryRunner();
+        try (var conn = getConn()) {
+            runner.update(conn, "DELETE FROM auth_codes");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static void cleanDatabase() {
         var runner = new QueryRunner();
 

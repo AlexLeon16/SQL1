@@ -14,18 +14,24 @@ java {
         languageVersion = JavaLanguageVersion.of(11)
     }
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testImplementation 'com.codeborne:selenide:6.19.1'
     testImplementation 'commons-dbutils:commons-dbutils:1.8.1'
     testImplementation 'com.mysql:mysql-connector-j:8.3.0'
     testImplementation 'org.slf4j:slf4j-simple:2.0.12'
-
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 test {
     useJUnitPlatform()
-
+    systemProperty 'file.encoding', 'UTF-8'
+    jvmArgs '-Dfile.encoding=UTF-8'
 }
