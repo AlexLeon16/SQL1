@@ -21,11 +21,15 @@ public class DataHelper {
         return new AuthInfo("vasya", "qwerty123");
     }
 
-    public static AuthInfo getInvalidAuthInfo() {
-        return new AuthInfo("petya", "wrongpass");
+    public static AuthInfo getInvalidPasswordForValidUser() {
+        return new AuthInfo("vasya", "wrongpass");
+    }
+
+    public static AuthInfo getInvalidLoginInfo() {
+        return new AuthInfo("petya", "qwerty123");
     }
 
     public static VerificationCode getInvalidVerificationCode() {
-        return new VerificationCode("00000");
+        return new VerificationCode("000000");
     }
 }

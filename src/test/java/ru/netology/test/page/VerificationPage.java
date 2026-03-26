@@ -1,30 +1,34 @@
 package ru.netology.test.page;
 
 import com.codeborne.selenide.SelenideElement;
+import ru.netology.test.data.DataHelper;
 
-import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Selenide.$;
 
 public class VerificationPage {
-    private final SelenideElement codeInput = $("[data-test-id='code'] input");
+
+    private final SelenideElement codeField = $("[data-test-id='code'] input");
     private final SelenideElement verifyButton = $("[data-test-id='action-verify']");
-    private final SelenideElement errorNotification = $("[data-test-id='error-notification']");
+    private final SelenideElement errorNotification = $("[data-test-id='error-notification'] .notification__content");
 
     public VerificationPage() {
-        codeInput.shouldBe(visible);
+        codeField.shouldBe(visible);
     }
 
-    public void validVerify(String code) {
-        codeInput.setValue(code);
+    public DashboardPage validVerify(String code) {
+        codeField.setValue(code);
+        verifyButton.click();
+        return new DashboardPage();
+    }
+
+    public void invalidVerify(DataHelper.VerificationCode verificationCode) {
+        codeField.setValue(verificationCode.getCode());
         verifyButton.click();
     }
 
-    public void invalidVerify(String code) {
-        codeInput.setValue(code);
-        verifyButton.click();
-    }
-
-    public SelenideElement getErrorNotification() {
-        return errorNotification;
+    public void shouldShowError(String expectedText) {
+        errorNotification.shouldBe(visible).shouldHave(exactText(expectedText));
     }
 }
